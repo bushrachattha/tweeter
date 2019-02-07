@@ -29,8 +29,8 @@
 					<div class="retweet">
 						<div class="icon-retweet"></div>
 					</div>
-						<h3>@russel</h3> retweeted <h3>@doug</h3><br/>
-					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, iusto, maxime, ullam autem a voluptate rem quos repudiandae.
+						<h3>@rachel</h3> retweeted <h3>@hahah</h3><br/>
+					 today is monday blah blah blah blah
 						<div class="over-bubble">
 							<div class="icon-mail-reply action"></div>
 							<div class="icon-retweet action"></div>

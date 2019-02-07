@@ -35,6 +35,42 @@
         				<button class="btn btn-primary" type="submit" aria-label="Left Align">
         					<span class="glyphicon glyphicon-pencil" aria-hidden="true"> </span> Tweet
         				</button>
+
+                        <ul class="navbar-nav ml-auto">
+                            <!-- Authentication Links -->
+                            @guest
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                </li>
+
+                                @if (Route::has('register'))
+                                    <li class="nav-item">
+                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    </li>
+                                    <br/>
+                                @endif
+                            @else
+                                <li class="nav-item dropdown">
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        {{ Auth::user()->name }} <span class="caret"></span>
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                           onclick="event.preventDefault();
+                                                         document.getElementById('logout-form').submit();">
+                                            {{ __('Logout') }}
+                                        </a>
+
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                            @csrf
+                                        </form>
+                                    </div>
+                                </li>
+                            @endguest
+                        </ul>
+                        <br/>
+
         				<!-- <form action="posts" method="post">
         				  <input type="text" placeholder="Username" name="username">
         				  <input type="text" placeholder="Password" name="psw">
@@ -52,7 +88,7 @@
         		<div class="col-sm-3">
         			<div class="panel panel-default">
         				<div class="panel-body">
-        					<a href="#"><img class="img-responsive" alt="" src="http://placehold.it/800x500"></a>
+        					<a href="#"><img class="img-responsive" alt="" src="https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg?cs=srgb&dl=animal-animal-photography-cat-104827.jpg&fm=jpg"></a>
         					<div class="row">
         						<div class="col-xs-3">
         							<h5>
@@ -117,29 +153,63 @@
                                     <button  class="btn btn-success  btn-sm">post</button>
         						</form> -->
                                 <div class="row">
-                                    <div class="col-xs-12 col-md-6">
+                                    <div   class="col-xs-12 col-md-6">
                                         <h2>Tweets</h2>
-                                        <form method="post" action="/posts">
+                                        <form method="post" action="/posts" href="singletweets">
                                             @csrf
-                                            <textarea class="form-control tweet-box" name="tweet" placeholder="Enter tweet here"></textarea>
-                                            <br/>
+                                            <textarea class="form-control tweet-box" name="tweet" placeholder="Enter tweet here" href="singletweets">
+
+                                            </textarea>
+
+                                            <!-- <div class="navbar-collapse navbar-collapse-1 collapse" aria-expanded="true">
+                                    			<ul class="nav navbar-nav">
+                                    				<li class="active">
+                                    					<a href="#111"><span class="glyphicon glyphicon-home"></span> tweet</a>
+                                    				</li>
+
+                                    			</ul>
+                                            </div> -->
+                                            <ul class="nav nav-pills nav-pills-custom">
+                								<li><a href="singletweets"><span class="glyphicon glyphicon-share-alt"></span></a></li>
+                								<li><a href="singletweets"><span class="glyphicon glyphicon-retweet"></span></a></li>
+                								<li><a href="singletweets"><span class="heart" class="glyphicon glyphicon-star"></span></a></li>
+                								<li><a href="singletweets"><span class="glyphicon glyphicon-option-horizontal"></span></a></li>
+                							</ul>
+
                                             <button  class="btn btn-success  btn-sm">post</button>
-                                        </form>
-                                        <div class="tweetEntry-text-container">
-                                          [text]
-                                        </div>
+                                         </form>
+                                            @foreach ($tweets as $singletweet)
 
-                                      </div>
+                                            {{ $singletweet->tweets }} -by {{$singletweet ->user_id}}<br>
+                                            <a href="posts/{{$singletweet->id}}">view</a>
+                                            <br/>
+                                            <!-- <div class="row">
+                                                <div class="col-xs-6 col-md-6">
 
-                                      <div class="optionalMedia" style="[displayMedia]">
-                                        <img class="optionalMedia-img" src="[tweetImageLinkSource]">
-                                      </div>
+                                                    {{$tweetComments}}
 
-                                      <div class="tweetEntry-action-list" style="line-height:24px;color: #b1bbc3;">
-                                        <i class="fa fa-reply" style="width: 80px;"></i>
-                                        <i class="fa fa-retweet" style="width: 80px"></i>
-                                        <i class="fa fa-heart" style="width: 80px"></i>
-                                      </div>
+
+                                                </div>
+                                            </div> -->
+                                            <div class="row">
+                                                <div class="col-xs-6 col-md-6">
+
+                                                    <form method="post" action="/comment">
+                                                        @csrf
+                                                        <textarea class="form-control comment-box" name="comment" placeholder="comment here"></textarea>
+                                                        <br/>
+                                                        <input type="hidden" name="user_id" value="{{$singletweet->id}}"/>
+                                                        <input type="hidden" name="tweet_id" value="{{ $singletweet->id }}"/>
+
+                                                        <button  class="btn btn-success  btn-sm">comment</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+
+                                            @endforeach
+
+
                                     </div>
                                 </div>
                                 <br/>
@@ -151,22 +221,38 @@
                                                 							<img alt="" class="media-object img-rounded" src="http://placehold.it/64x64">
                                                 						</a>
                                                 						<div class="media-body">
-                                                							<h4 class="media-heading">$user_id</h4>
+                                                							<h4 class="media-heading">$user</h4>
                                                 							<p>$tweet</p>
                                                 							<ul class="nav nav-pills nav-pills-custom">
                                                 								<li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
                                                 								<li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
-                                                								<li><a href="#"><span class="glyphicon glyphicon-star"></span></a></li>
+                                                								<li><a href="#"><span class="heart" ></span></a></li>
                                                 								<li><a href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a></li>
                                                 							</ul>
                                                 						</div>
                                                 @yield('content')
 
                                                 		</div>
-                                        <a href="/posts1 {{ $singletweet->id }}"> {{$singletweet ->tweets}} </a>
-                                        - by{{$singletweet->user_id}}
+                                        <!-- <a href="/posts1 {{ $singletweet->id }}"> {{$singletweet ->tweets}} </a>
+                                        - by{{$singletweet->user_id}} -->
 
+                                                					<div class="media">
+                                                						<a class="media-left" href="#666">
+                                                							<img alt="" class="media-object img-rounded" src="http://placehold.it/64x64">
+                                                						</a>
+                                                						<div class="media-body">
+                                                							<h4 class="media-heading">Ryan Rishaug</h4>
+                                                							<p>Peter Chiarelli has been fired by the Oilers.  Done deal</p>
+                                                							<ul class="nav nav-pills nav-pills-custom">
+                                                								<li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
+                                                								<li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
+                                                								<li><a href="#"><span class="heart"></span></a></li>
+                                                								<li><a href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a></li>
+                                                							</ul>
+                                                						</div>
+                                                @yield('content')
 
+                                                		</div>
                                         <br/><br/>commentbox<br/>
                                         <div class="row">
                                             <div class="col-xs-6 col-md-6">
@@ -220,45 +306,14 @@
         @yield('content')
 
         		</div>
-        					<div class="media">
-        						<a class="media-left" href="#777">
-        							<img alt="" class="media-object img-rounded" src="http://placehold.it/64x64">
-        						</a>
-        						<div class="media-body">
-        							<h4 class="media-heading">Media heading</h4>
-        							<p>Dolorem aspernatur rerum, iure? Culpa iste aperiam sequi, fuga, quasi rerum, eum, quo natus tenetur officia placeat.</p>
-        							<ul class="nav nav-pills nav-pills-custom">
-        								<li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
-        								<li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
-        								<li><a href="#"><span class="glyphicon glyphicon-star"></span></a></li>
-        								<li><a href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a></li>
-        							</ul>
-        						</div>
 
-        					</div>
-        					<div class="media">
-        						<a class="media-left" href="#888">
-        							<img alt="" class="media-object img-rounded" src="http://placehold.it/64x64">
-        						</a>
-        						<div class="media-body">
-        							<h4 class="media-heading">Media heading</h4>
-        							<p>Dolorem aspernatur rerum, iure? Culpa iste aperiam sequi, fuga, quasi rerum, eum, quo natus tenetur officia placeat.</p>
-        							<ul class="nav nav-pills nav-pills-custom">
-        								<li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
-        								<li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
-        								<li><a href="#"><span class="glyphicon glyphicon-star"></span></a></li>
-        								<li><a href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a></li>
-        							</ul>
-        						</div>
-
-        					</div>
         					<div class="media">
         						<a class="media-left" href="#999">
         							<img alt="" class="media-object img-rounded" src="http://placehold.it/64x64">
         						</a>
         						<div class="media-body">
         							<h4 class="media-heading">Media heading</h4>
-        							<p>Dolorem aspernatur rerum, iure? Culpa iste aperiam sequi, fuga, quasi rerum, eum, quo natus tenetur officia placeat.</p>
+        							<p>blah blah blah hahhaha</p>
         							<ul class="nav nav-pills nav-pills-custom">
         								<li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
         								<li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
@@ -275,17 +330,6 @@
         			<br>
         			<br>
 
-
-        			<!-- <div class="panel panel-default">
-        				<div class="panel-heading">Prova</div>
-        				<div class="panel-body">
-        					<ul class="nav nav-pills">
-        						<li role="presentation" class="active"><a href="#">Home</a></li>
-        						<li role="presentation"><a href="#">Profile</a></li>
-        						<li role="presentation"><a href="#">Messages</a></li>
-        					</ul>
-        				</div>
-        			</div> -->
         		</div>
 
         		<div class="col-sm-3">
@@ -303,7 +347,7 @@
         						</div>
         						<div class="media-body">
         							<h4 class="media-heading">bushra</h4>
-        							<a href="#" class="btn btn-default btn-xs">
+        							<a href="bushra" class="btn btn-default btn-xs">
         								+
         								<span class="glyphicon glyphicon-user"></span>
         								Follow
@@ -316,7 +360,7 @@
         						</div>
         						<div class="media-body">
         							<h4 class="media-heading">megha</h4>
-        							<a href="#" class="btn btn-default btn-xs">
+        							<a href="megha" class="btn btn-default btn-xs">
         								+
         								<span class="glyphicon glyphicon-user"></span>
         								Follow
@@ -328,8 +372,8 @@
         							<img src="http://placehold.it/32x32" alt="" class="media-object img-rounded">
         						</div>
         						<div class="media-body">
-        							<h4 class="media-heading">bridney</h4>
-        							<a href="#" class="btn btn-default btn-xs">
+        							<h4 class="media-heading">Brittany</h4>
+        							<a href="Brittany" class="btn btn-default btn-xs">
         								+
         								<span class="glyphicon glyphicon-user"></span>
         								Follow
@@ -338,7 +382,7 @@
         					</div>
         				</div>
         				<div class="panel-footer">
-        					<a href="www.google.it">
+        					<a href="posts">
         						<span class="glyphicon glyphicon-user"></span>
         						Find people you know
         					</a>
@@ -366,10 +410,12 @@
         			</div>
         		</div>
         	</div>
+          </div>
+
         </html>
-        </div>
 
 
+<!--
 <div class="row">
     <div class="col-xs-12 col-md-6">
         <h2>Tweets</h2>
@@ -406,4 +452,4 @@
 
 {{ $singletweet->tweets }} -by {{$singletweet ->user_id}}
 <br/>
-@endforeach
+@endforeach -->

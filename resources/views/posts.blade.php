@@ -17,7 +17,7 @@
     </body>
 </html> -->
 <!--
-@extends('posts-layout') -->
+@extends('posts-layout')
 
 @section ('content')
 
